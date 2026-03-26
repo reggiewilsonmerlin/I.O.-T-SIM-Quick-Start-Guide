@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#00D4FF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IOTSIM Guide">
+<meta name="description" content="Infinite Outcome Trade Simulator — Quick Start Guide v26">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="icon" href="./icon-192.png">
+<title>IOTSIM Quick Start Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0a0c10;--panel:#111318;--surface:#181c24;--border:#262d3a;
+  --accent:#00D4FF;--accent2:#FF6B35;--green:#00c853;--red:#ff1744;
+  --gold:#ffd600;--purple:#aa00ff;--cyan:#00D4FF;
+  --text:#e0e4ea;--dim:#6b7280;--bright:#f5f6f8;
+  --font:'DM Sans',system-ui,sans-serif;--mono:'Fira Code',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font);overflow:hidden}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+*{scrollbar-width:thin;scrollbar-color:var(--border) transparent}
+
+#app{display:flex;height:100vh;height:100dvh}
+
+/* Sidebar */
+#sidebar{width:260px;flex-shrink:0;border-right:1px solid var(--border);background:var(--panel);display:flex;flex-direction:column;overflow:hidden}
+#sidebar .hdr{padding:20px 18px 14px;border-bottom:1px solid var(--border)}
+#sidebar .hdr h1{font-size:13px;font-weight:800;color:var(--accent);letter-spacing:2.5px;margin:0}
+#sidebar .hdr p{font-size:11px;color:var(--dim);margin-top:3px}
+#sidebar nav{flex:1;overflow-y:auto;padding:8px 6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;cursor:pointer;border-left:3px solid transparent;color:var(--dim);font-size:13px;font-weight:400;transition:all .15s;margin-bottom:1px}
+.nav-item:hover{background:#ffffff08;color:var(--text)}
+.nav-item.active{background:#00D4FF15;border-left-color:var(--accent);color:var(--bright);font-weight:700}
+.nav-item .ico{font-size:17px;flex-shrink:0}
+#sidebar .foot{padding:10px;border-top:1px solid var(--border);font-size:10px;color:var(--dim);text-align:center}
+
+/* Mobile */
+#mob-toggle{display:none;position:fixed;top:12px;left:12px;z-index:200;background:var(--panel);border:1px solid var(--border);color:var(--text);padding:8px 13px;border-radius:8px;font-size:20px;cursor:pointer;line-height:1}
+#mob-overlay{display:none;position:fixed;inset:0;z-index:199;background:#0a0c10f0;padding:60px 20px;overflow-y:auto}
+#mob-overlay.show{display:block}
+@media(max-width:740px){
+  #sidebar{display:none}
+  #mob-toggle{display:block}
+}
+
+/* Content */
+#content{flex:1;overflow-y:auto;padding:32px 40px 100px}
+@media(max-width:740px){#content{padding:60px 18px 100px}}
+#content-inner{max-width:820px;margin:0 auto}
+
+/* Typography */
+.h1{font-size:30px;font-weight:800;color:var(--accent);margin:0 0 10px;padding-bottom:12px;border-bottom:3px solid var(--accent);line-height:1.25}
+.h2{font-size:21px;font-weight:700;color:var(--accent2);margin:30px 0 10px}
+.h3{font-size:17px;font-weight:700;color:var(--bright);margin:22px 0 8px}
+.p{font-size:15px;line-height:1.8;margin:10px 0}
+.b{font-weight:700;color:var(--bright)}
+.bc{font-weight:700}
+
+/* Callout */
+.callout{border-left:4px solid var(--accent);border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0}
+.callout .ct{font-weight:700;font-size:15px;margin-bottom:6px}
+.callout .cb{font-size:14px;line-height:1.7}
+
+/* Screenshot placeholder */
+.ss{border:2px dashed var(--border);border-radius:10px;padding:40px 20px;text-align:center;margin:16px 0;background:var(--surface)}
+.ss .st{font-size:14px;font-weight:600;color:var(--dim)}
+.ss .sd{font-size:13px;color:var(--dim);margin-top:6px;font-style:italic}
+
+/* Tables */
+.tbl-wrap{overflow-x:auto;margin:12px 0;border-radius:8px;border:1px solid var(--border)}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{padding:10px 14px;background:var(--bg);color:var(--bright);font-weight:700;text-align:left;border-bottom:2px solid var(--border);white-space:nowrap}
+.tbl td{padding:9px 14px;border-bottom:1px solid var(--border)}
+.tbl tr:nth-child(even) td{background:var(--panel)}
+.tbl tr:nth-child(odd) td{background:var(--surface)}
+.tbl .a{color:var(--accent);font-weight:600;font-family:var(--mono)}
+
+/* Nav buttons */
+.nav-btns{display:flex;justify-content:space-between;margin-top:40px;padding-top:20px;border-top:1px solid var(--border)}
+.nav-btn{padding:10px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;border:1px solid var(--border);background:var(--surface);color:var(--dim);transition:all .2s}
+.nav-btn:hover{filter:brightness(1.2)}
+.nav-btn.next{background:#00D4FF18;border-color:#00D4FF55;color:var(--accent);font-weight:700}
+
+/* Numbered step */
+.step{display:flex;gap:12px;margin:14px 0;align-items:flex-start}
+.step .num{min-width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0}
+
+/* Monitor card */
+.mcard{background:var(--surface);border-radius:8px;padding:13px 17px;margin:10px 0;border:1px solid var(--border)}
+.mcard .mt{font-weight:700;font-size:15px;color:var(--accent2)}
+.mcard .md{font-size:13px;margin:4px 0}
+.mcard .mu{font-size:13px;color:var(--green);font-style:italic}
+
+/* Preset tabs */
+.ptabs{display:flex;gap:6px;margin:16px 0;flex-wrap:wrap}
+.ptab{padding:8px 16px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--dim);font-weight:700;font-size:13px;cursor:pointer;transition:all .2s}
+.ptab:hover{border-color:var(--accent);color:var(--accent)}
+.ptab.on{background:#00D4FF18;border-color:var(--accent);color:var(--accent)}
+
+/* Calculator */
+.calc{background:var(--surface);border-radius:10px;padding:20px;border:1px solid var(--border);margin:12px 0}
+.calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:500px){.calc-grid{grid-template-columns:1fr}}
+.calc label{font-size:11px;color:var(--dim);display:block;margin-bottom:4px}
+.calc input{width:100%;padding:8px 10px;background:var(--panel);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:14px;font-family:var(--mono)}
+.calc input:focus{outline:1px solid var(--accent)}
+.calc-results{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap}
+.calc-box{flex:1;min-width:140px;background:var(--panel);border-radius:8px;padding:12px;text-align:center}
+.calc-box .cl{font-size:11px;color:var(--dim)}
+.calc-box .cv{font-size:20px;font-weight:800;font-family:var(--mono);margin-top:4px}
+
+/* Install banner */
+#install-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--panel);border-top:1px solid var(--border);padding:12px 20px;z-index:300;text-align:center}
+#install-bar.show{display:block}
+#install-btn{background:var(--accent);color:#000;border:none;padding:10px 24px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;font-family:var(--font)}
+#install-btn:hover{filter:brightness(1.15)}
+#install-dismiss{background:transparent;border:none;color:var(--dim);cursor:pointer;font-size:13px;margin-left:12px;font-family:var(--font)}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <aside id="sidebar">
+    <div class="hdr"><h1>♾️ IOTSIM</h1><p>Quick Start Guide • v26</p></div>
+    <nav id="nav"></nav>
+    <div class="foot">© Reggie_W 2026+</div>
+  </aside>
+  <button id="mob-toggle" onclick="toggleMobile()">☰</button>
+  <div id="mob-overlay" onclick="closeMobile(event)"><div id="mob-nav"></div></div>
+  <main id="content"><div id="content-inner"></div></main>
+</div>
+
+<div id="install-bar">
+  <span style="color:var(--text);font-size:14px;margin-right:8px">📲 Install this guide for offline access</span>
+  <button id="install-btn" onclick="doInstall()">Install App</button>
+  <button id="install-dismiss" onclick="dismissInstall()">Not now</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+const SECTIONS=[
+{id:"welcome",title:"Welcome",icon:"🚀"},
+{id:"first-load",title:"First Load",icon:"📦"},
+{id:"emoji-legend",title:"Emoji Legend",icon:"🏷️"},
+{id:"label-anatomy",title:"Trade Labels",icon:"🔖"},
+{id:"settings",title:"Settings Overview",icon:"⚙️"},
+{id:"account",title:"Account & Risk",icon:"💰"},
+{id:"presets",title:"Asset Presets",icon:"🎯"},
+{id:"monitor",title:"Insight Monitor",icon:"📊"},
+{id:"switches",title:"Quick Switches",icon:"🎛️"},
+{id:"next",title:"Next Steps",icon:"⏩"},
+{id:"closing",title:"What's Next?",icon:"📚"},
+];
+
+let active="welcome";
+let presetTab=0;
+
+// ═══════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════
+const e=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const tbl=(hdrs,rows,accent)=>{
+  let h=hdrs.map(x=>`<th>${x}</th>`).join('');
+  let r=rows.map(row=>`<tr>${row.map((c,i)=>`<td${i===0&&accent?' class="a"':''}>${c}</td>`).join('')}</tr>`).join('');
+  return`<div class="tbl-wrap"><table class="tbl"><thead><tr>${h}</tr></thead><tbody>${r}</tbody></table></div>`;
+};
+const callout=(emoji,title,body,col='var(--accent)')=>`<div class="callout" style="border-left-color:${col};background:${col}11"><div class="ct" style="color:${col}">${emoji} ${title}</div><div class="cb">${body}</div></div>`;
+const ss=d=>`<div class="ss"><div class="st">📷 INSERT SCREENSHOT</div><div class="sd">${d}</div></div>`;
+const sTable=(title,rows)=>{
+  let h=['Setting','Recommended','Why'].map(x=>`<th>${x}</th>`).join('');
+  let r=rows.map(([s,v,d])=>`<tr><td class="a">${s}</td><td style="font-family:var(--mono);color:var(--accent)">${v}</td><td>${d}</td></tr>`).join('');
+  return`<div class="h3" style="color:var(--accent2);margin-top:18px">${title}</div><div class="tbl-wrap"><table class="tbl"><thead><tr>${h}</tr></thead><tbody>${r}</tbody></table></div>`;
+};
+
+// ═══════════════════════════════════════
+// SECTIONS CONTENT
+// ═══════════════════════════════════════
+const content={
+welcome:()=>`
+<div style="text-align:center;margin:-10px 0 20px"><img src="./logo.png" alt="IOTSIM" style="max-width:100%;border-radius:12px;box-shadow:0 8px 40px #00D4FF22"></div>
+<div class="h1">Welcome — This Changes Everything</div>
+<p class="p">Congratulations. If you're reading this, you've just gained access to one of the most comprehensive trade simulation and analysis tools ever built for TradingView.</p>
+<p class="p">But before we talk about settings and buttons, let's talk about <span class="b">why this matters to you.</span></p>
+<div class="h2">Think about the hours you've already invested.</div>
+<p class="p">The late nights staring at charts. The endless manual backtesting — one model, one asset, one timeframe at a time — just to squeeze out a microscopic improvement in confidence. The trades you entered out of FOMO because you were terrified price would run without you, only to watch your position bleed red because the entry was poor. The losing streaks that made you question whether you ever had an edge at all.</p>
+<p style="font-size:24px;font-weight:800;color:var(--accent);margin:26px 0">That era is over.</p>
+<p class="p">The Infinite Outcome Trade Simulator detects every qualifying setup across five ICT-based models, simulates them with your exact rules, and hands you the irrefutable statistical truth about how your configurations actually perform. Not opinions. Not feelings. <span class="b">Numbers.</span></p>
+<p class="p"><span class="bc" style="color:var(--red)">✘ No longer</span> sitting at the charts for hours backtesting one model across one asset in a single timeframe, hoping for a slightly improved view of what to expect.</p>
+<p class="p"><span class="bc" style="color:var(--red)">✘ No longer</span> staring endlessly at the chart hoping your setup shows its hand.</p>
+<p class="p"><span class="bc" style="color:var(--red)">✘ No longer</span> entering positions out of FOMO because "what if price runs without me?" — leading to poor entries and negative results.</p>
+<p class="p"><span class="bc" style="color:var(--red)">✘ No longer</span> doubting your trading abilities after a bad run of losses.</p>
+<p class="p"><span class="bc" style="color:var(--red)">✘ No longer</span> wondering what the odds are or whether price action is in your favour after entering a position.</p>
+<div style="height:20px"></div>
+<p class="p"><span class="bc" style="color:var(--green)">✔ Now</span> you fine-tune your own trading model exactly to your liking.</p>
+<p class="p"><span class="bc" style="color:var(--green)">✔ Now</span> you use the Insight Monitor to tweak, refine, and validate your setup with real statistics.</p>
+<p class="p"><span class="bc" style="color:var(--green)">✔ Now</span> you know how your unique configuration has performed recently and over time — before you've even entered a trade.</p>
+<p class="p"><span class="bc" style="color:var(--green)">✔ Now</span> you create alerts for your custom model and walk away from the chart. When the alert sounds, you open the charts, check the statistics, read the price action, and make your decision with full confidence.</p>
+${callout('🔥','KEY INSIGHT','Full accountability is now on you. You have the tool. You have the data. The only variable left is your discipline. Let\'s get you set up.','var(--red)')}
+`,
+
+"first-load":()=>`
+<div class="h1">Adding the Indicator & First Load</div>
+<p class="p">Open any chart on TradingView, click the <span class="b">Indicators</span> button (or press /), and search for <span class="b">"V26 IOTSIM"</span> or <span class="b">"Infinite Outcome Trade Simulator"</span>. Click to add it.</p>
+${ss('TradingView indicator search showing V26 IOTSIM in the results list')}
+<div class="h2">What You'll See on First Load</div>
+<p class="p">With default settings, the indicator scans the most recent 5,000 bars using All Models in both directions:</p>
+<p class="p"><span class="b" style="color:var(--accent2)">🔵 Detected Setups</span> (blue labels/rays by default) — Pending limit orders waiting to be filled.</p>
+<p class="p"><span class="b" style="color:var(--green)">🟢 Active Longs</span> (green labels by default) — Open trades tracked in real time.</p>
+<p class="p"><span class="b" style="color:var(--red)">🔴 Active Shorts</span> (red labels by default) — Same, short direction.</p>
+<p class="p"><span class="b">📊 The Insight Monitor</span> — On-chart stats table (default: bottom-right) with Total, Long, Short columns.</p>
+<p class="p"><span class="b">📦 PD Array Visuals</span> — FVG boxes, Order Blocks, Breaker Blocks, Wickless/Tailless rays, BOS/MSS labels, BSL/SSL levels, HTF IPDA lines.</p>
+${ss('Full chart showing detected (blue), active (green/red), PD Array boxes, and the Insight Monitor')}
+${callout('⚠️','HEADS UP',"If the chart looks cluttered on first load, don't panic! The Quick Switches section covers toggling each visual category on or off.",'var(--accent)')}
+`,
+
+"emoji-legend":()=>`
+<div class="h1">Emoji Key & Label Legend</div>
+<p class="p">The indicator uses emojis on trade labels for instant visual context:</p>
+<div class="h2">Trade Status Emojis</div>
+${tbl(['Emoji','Name','Meaning'],[['🎱','Detected','Entry hasn\'t been hit yet'],['🤞🏻','Active','Entry hit — tracked live'],['✅','Win','Closed in profit'],['❌','Loss','Closed at a loss'],['⛔️','Missed','TP reached before entry filled'],['⏰','EOD Close','Auto-closed at end of day']])}
+<div class="h2">Modifier & Context Emojis</div>
+${tbl(['Emoji','Name','Meaning'],[['🧢','Dev Capped','Target adjusted by Min/Max Dev filter or rounding'],['💰','Dollar Capped','Target capped by Dollar/Tick Hard Cap'],['⏲️','Killzone','Detected during active ICT Killzone'],['⏱️','Macro','Detected during active ICT Macro window'],['🎛️','TP Modified','Target Modifiers applied'],['🎚️','SL Modified','SL Modifiers applied'],['🛑','Circuit Breaker','Daily Circuit Breaker halted trade'],['❗️','Depth Warning','Fewer PD Arrays found than requested']])}
+${callout('💡','GOOD TO KNOW','Emojis are toggled in Group 34 (Trade Label & Ray Aesthetics). Killzone/Macro emojis are OFF by default — enable when analysing session performance.','var(--accent2)')}
+`,
+
+"label-anatomy":()=>`
+<div class="h1">Reading a Trade Label</div>
+<p class="p">Every trade has three labels: <span class="b">Entry</span>, <span class="b">TP</span>, and <span class="b">SL</span>. The Trade ID letter links all three.</p>
+<div class="h2">Entry Label</div>
+${tbl(['Component','Example','Meaning'],[['Direction','Long / Short','Side of market'],['Model','FVG / OB / Disp / i-FVG / BB','ICT model that detected it'],['Trade ID','A, B, … AA, AB','Unique letter across all labels'],['Price','21,450.25','Calculated entry level'],['PnL','$1,250.00','Current or final value'],['(Hypo)','(Hypo) $800','Hypothetical PnL for missed trades']])}
+<div class="h2">TP Label</div>
+${tbl(['Component','Example','Meaning'],[['Dev Multiplier','2.5x','Displacement-lengths the target extends'],['Target Type','PD Array(3)','Method and depth'],['TP + ID','TP A','Confirms TP belongs to trade A']])}
+<div class="h2">SL Label</div>
+${tbl(['Component','Example','Meaning'],[['SL Method','PD Array(2)','How the stop was calculated'],['SL + ID','A','Confirms SL belongs to trade A']])}
+${callout('🎯','PRO TIP','The Trade ID letter is your anchor. Entry A, TP A, and SL A all belong to the same trade.','var(--green)')}
+`,
+
+settings:()=>`
+<div class="h1">Settings at a Glance</div>
+<p class="p">37 settings groups. Most optional. Focus on ★ essentials first:</p>
+${tbl(['#','Group','Purpose'],[['★ 1','Monitor & Output','Which Insight Monitor page to display'],['★ 2','Quick Switches','Toggle detected/active/closed/missed visibility'],['★ 3','Backtest Engine','Scan mode, lookback bars, avg/median'],['★ 4','Account & Risk','Contracts, margin, leverage, value type'],['★ 5','Global Trade Mgmt','Direction, mirroring, 2nd chance, EOD, HTF'],['6–12','Long Setup','Entry, targets, SL, modifiers, filters, model options'],['13–19','Short Setup','Mirror of Long — or independent'],['20','Partial Profits','Partial TP levels and sizing'],['21','Dollar & Tick Filters','Min profit, max DD, circuit breaker'],['22–23','Killzones & Macros','ICT session and macro filters'],['★ 24','Dashboard Rows','Which stats appear on Full Stats'],['★ 25','Dashboard Aesthetics','Monitor position, size, colours'],['26–34','Visuals & Labels','Structure, FVG/OB colours, label styles, emojis'],['35–37','Limits, Dates, System','Max trades, date range, alerts']],true)}
+<p class="p"><span class="bc" style="color:var(--gold)">★ = Configure these first.</span> The rest can stay on defaults.</p>
+`,
+
+account:()=>`
+<div class="h1">Account & Risk Setup (Group 4)</div>
+<p class="p">Getting Group 4 right is critical. Wrong numbers = wrong dollar figures on the Insight Monitor.</p>
+${callout('💵','FUTURES (NQ, ES, YM, CL, GC)','<strong>PnL = Price Move × Point Value × Contracts</strong><br>Auto-detected. Keep Margin 1.0, Leverage 1.0. Only change Contracts.','var(--accent2)')}
+${callout('💵','CRYPTO, FOREX & EQUITIES','<strong>PnL = Price Move × (Margin × Leverage / Entry) × Contracts</strong><br>Auto-Detect OFF. Set Margin, Leverage, Contracts manually.','var(--purple)')}
+<div class="h2">Step-by-Step</div>
+<p class="p"><span class="bc" style="color:var(--accent)">Step 1:</span> Total position size in dollars (e.g., $10,000).</p>
+<p class="p"><span class="bc" style="color:var(--accent)">Step 2:</span> Your own capital = <span class="b">Margin</span> (e.g., $1,000).</p>
+<p class="p"><span class="bc" style="color:var(--accent)">Step 3:</span> Exchange leverage = <span class="b">Leverage</span> (e.g., 10x).</p>
+<p class="p"><span class="bc" style="color:var(--accent)">Step 4:</span> Sanity check: Margin × Leverage = Buying Power ✔️</p>
+<p class="p"><span class="bc" style="color:var(--accent)">Step 5:</span> <span class="b">Contracts</span> = units traded (0.15 BTC, 100 shares, etc.).</p>
+<div class="h2">Examples</div>
+${tbl(['Asset','Margin','Leverage','Contracts','Buying Power'],[['BTC (spot)','$10,000','1x','0.15','$10,000'],['BTC (10x perp)','$1,000','10x','0.15','$10,000'],['SOL (5x perp)','$2,000','5x','50','$10,000'],['PEPE (spot)','$500','1x','25,000,000','$500'],['AAPL (cash)','$10,000','1x','100','$10,000'],['NQ Futures','$1.00','1x','1','Auto']],true)}
+<div class="h2">Interactive PnL Calculator</div>
+<div class="calc">
+  <div class="calc-grid">
+    <div><label>Margin ($)</label><input type="number" id="c_margin" value="1000" oninput="calcPnl()"></div>
+    <div><label>Leverage (x)</label><input type="number" id="c_lev" value="10" oninput="calcPnl()"></div>
+    <div><label>Contracts</label><input type="number" id="c_qty" value="0.15" step="0.01" oninput="calcPnl()"></div>
+    <div><label>Entry Price ($)</label><input type="number" id="c_entry" value="65000" oninput="calcPnl()"></div>
+  </div>
+  <div class="calc-results">
+    <div class="calc-box"><div class="cl">Buying Power</div><div class="cv" id="c_bp" style="color:var(--accent2)">$10,000</div></div>
+    <div class="calc-box"><div class="cl">PnL on 2% Move</div><div class="cv" id="c_pnl" style="color:var(--green)">$195.00</div></div>
+  </div>
+</div>
+<div class="h2">Ticks Mode</div>
+<p class="p"><span class="b">Alternative:</span> Set Global Value to "Ticks" for raw price movement. Common for intraday index futures traders.</p>
+`,
+
+presets:()=>{
+const presets=[
+{tab:'NQ/ES/YM',title:'Index Futures (NQ, ES, YM)',desc:'Highly liquid, predictable sessions. ICT Killzones align perfectly. TFs: 1m–5m.',tables:[
+  ['Account & Risk',[['Global Value','Dollars or Ticks','Dollars for standard; Ticks for raw movement'],['Auto-Detect','ON','$20/pt NQ, $50/pt ES, $5/pt YM'],['Contracts','1','Your actual count']]],
+  ['Global Trade Mgmt',[['EOD Auto-Close','ON','Essential for day trading'],['IPDA Timeframe','D','Daily standard for index futures'],['Swing Strength','5','Dominant intraday swings']]],
+  ['Core Setup',[['Model','All Models','Wide net — narrow via Leaderboard'],['Entry Level','0.34','Optimal Trade Entry zone'],['SL Method','PD Array Count','Structural SL anchor'],['SL Depth','2','2nd PD Array behind entry']]],
+]},
+{tab:'CL/GC',title:'Commodities (CL, GC)',desc:'Wider ranges, stronger momentum. TFs: 1m–5m.',tables:[
+  ['Key Differences',[['Entry Level','0.382','Commodities retrace deeper'],['SL Depth','2–3','Wider stops for volatility'],['SL Buffer','ON','Prevents premature stop-outs'],['EOD Auto-Close','ON','Intraday CL/GC']]],
+]},
+{tab:'BTC/ETH',title:'Crypto (BTC, ETH, SOL)',desc:'24/7 markets, no session close. TFs: 5m–15m.',tables:[
+  ['Key Differences',[['Auto-Detect','OFF','No fixed point value'],['Margin','Your $ collateral','See Account & Risk'],['Leverage','Your exchange lev.','1x spot, 10x perps etc.'],['EOD Auto-Close','OFF','No session boundaries'],['Entry Level','0.5','Crypto retraces to equilibrium'],['IPDA TF','D or W','Weekly for swing context']]],
+]},
+{tab:'AAPL/SPY',title:'Equities (AAPL, SPY)',desc:'Large-cap stocks with good volume. TFs: 1m–15m.',tables:[
+  ['Key Differences',[['Auto-Detect','OFF','No exchange point value'],['Margin','$ per trade','Total capital allocated'],['Leverage','1x or 2x','Cash vs margin'],['Contracts','Share count','e.g., 100'],['EOD Auto-Close','ON','Clear session boundaries'],['Swing Strength','3–5','More intraday pivots']]],
+]},
+];
+const d=presets[presetTab];
+let tabs=presets.map((p,i)=>`<button class="ptab${i===presetTab?' on':''}" onclick="presetTab=${i};render()">${p.tab}</button>`).join('');
+let tables=d.tables.map(([t,rows])=>sTable(t,rows)).join('');
+return`
+<div class="h1">Recommended Presets by Asset Class</div>
+<p class="p">Starting points to refine using the Insight Monitor. The tool helps you discover what works for <span class="b">you</span>.</p>
+<div class="ptabs">${tabs}</div>
+<div class="h2">${d.title}</div>
+<p class="p">${d.desc}</p>
+${tables}`;
+},
+
+monitor:()=>`
+<div class="h1">The Insight Monitor</div>
+<p class="p">Your command centre. Every closed trade processed, every stat calculated.</p>
+<div class="h2">Monitor Pages</div>
+${[
+['📊 Full Stats','Complete breakdown: Total, Long, Short columns.','Primary analysis page. Compare directions, find what drives profitability.'],
+['🔍 Overview','Condensed 4-row snapshot: WR, Net PnL, Peak DD, counts.','Quick health check. Swap to this for a cleaner chart.'],
+['📅 Day Analysis','WR, PnL, Profit Factor, best hour per day of week.','Find best/worst days. Adjust exposure accordingly.'],
+['⏰ Hour Analysis','WR, PnL, Profit Factor, top weekday per hour (EST).','Find profitable hours. Focus Killzones on winning hours.'],
+['🌍 KZ & Macros','Individual stats per ICT session and Macro window.','See which sessions produce edge for YOUR setup.'],
+['📝 Recent Trades','Scrollable list: ID, model, direction, PnL.','Quick reference for recent outcomes.'],
+['🏆 Model Leaderboard','Ranks all 10 model/direction combos by PF and PnL.','Most powerful page. For intraday, LOWER lookback to 200–500 bars to see what works RIGHT NOW.'],
+].map(([t,d,u])=>`<div class="mcard"><div class="mt">${t}</div><div class="md">${d}</div><div class="mu">🎯 ${u}</div></div>`).join('')}
+<div class="h2">Recommended Stat Rows</div>
+${tbl(['Row','Why You Want It'],[
+['Detected/Closed','How many found vs completed — high ratio = most trigger'],
+['Win Rate','Most fundamental. >50% + decent R:R = edge'],
+['Win/Loss Streaks','Understand variance. Max loss streak ≠ broken setup'],
+['Net/Avg Real $','Bottom line. The number that pays the bills'],
+['Profit Factor','Gross profit ÷ loss. >1.0 profitable, >2.0 excellent'],
+['Max/Avg Unr. $','Unrealised profit before close. Much higher than Net? Use partials'],
+['Max/Avg DD','Worst drawdown per trade. Exceeds tolerance? Tighten stops'],
+['Max/Avg SL Unr.$','Profit reached BEFORE SL hit. Goldmine — if consistently +$500 before SL, set TP1 there'],
+['TP1 Hits & Total','How often TP1 hit + value. Compare with Net PnL for TP1 dependency'],
+['SL Hits','% ending at SL. High + low SL unrealised = stops too tight'],
+['Peak Max Realised','Equity high-water mark. Should trend up if edge exists'],
+['Peak Max DD','Worst peak-to-trough. Most important risk metric'],
+])}
+${callout('🎯','PRO TIP','Once fine-tuned, hide the Monitor (Show Trade Insights OFF in Group 1). Bring it back anytime. The simulation runs regardless.','var(--green)')}
+`,
+
+switches:()=>`
+<div class="h1">Controlling Chart Clutter: Quick Switches</div>
+<p class="p">Group 2 is your visual command panel. Colours mentioned are <span class="b">defaults</span> — fully customisable in Group 34.</p>
+${tbl(['Switch','Default','What It Controls'],[
+['Show Detected','ON','Pending setups (blue labels/rays by default)'],
+['Show Active','ON','Open trades (green longs, red shorts by default)'],
+['Show All Closed','OFF','Every completed trade — dense, for review'],
+['Show Missed','OFF','Setups where TP hit before entry (⛔️)'],
+['Show Wins','OFF','Profitable trades only — pattern study'],
+['Show Losses','OFF','Losing trades only — SL analysis'],
+['Show 2nd Chance','OFF','Swept then re-entered setups'],
+['Show Partials','OFF','TP1/TP2/TP3 partial lines and labels'],
+],true)}
+${callout('🎯','PRO TIP','For active trading, keep only Detected + Active ON. Enable Wins/Losses when studying patterns.','var(--green)')}
+`,
+
+next:()=>`
+<div class="h1">Next Steps — Your First Week</div>
+<p class="p">You're set up. Baseline loaded. Here's your first week:</p>
+${[
+['Let it accumulate data.','200–500+ closed trades before strong conclusions. On 5m, can happen in a single day.'],
+['Study the Insight Monitor.','Win Rate, Profit Factor, Peak Max DD = three primary health indicators. WR >50% + PF >1.5 = edge.'],
+['Use the Model Leaderboard.','See which model/direction combos carry profitability. Switch from All Models to top performers.'],
+['Rotate through pages.','Day Analysis for best/worst days. Hour Analysis for profitable hours. KZ & Macros for session edge.'],
+['Adjust the Lookback.','High lookback (3,000–5,000) = broad baseline. But price goes through contraction/expansion, trend/reversal. For intraday: start high for baseline, then LOWER to 200–500 bars to align with current conditions. That\'s where real edge lives.'],
+['Set up alerts.','Group 37: Detected, Entry Hit, TP1 Hit, TSL Update. Walk away. Alert fires → check Monitor → read PA → decide.'],
+['Read the companion guides.','Walkthrough Guide for section depth. Complete User Manual for every single setting.'],
+].map(([t,d],i)=>`<div class="step"><div class="num">${i+1}</div><div><span class="bc" style="color:var(--accent)">${t}</span> <span style="font-size:14px;line-height:1.7">${d}</span></div></div>`).join('')}
+${callout('🔥','KEY INSIGHT',"The tool doesn't trade for you. It gives you the information to trade with conviction. The setups are yours. The stats are yours. The edge is yours. Now go find it.",'var(--red)')}
+`,
+
+closing:()=>`
+<div class="h1">What's Next?</div>
+<p class="p">This Quick Start Guide got you up and running. Two companion documents are waiting:</p>
+${callout('📖','THE WALKTHROUGH GUIDE','A section-by-section tour through every settings group. What each controls, how options relate, which combinations to experiment with.','var(--accent2)')}
+${callout('📚','THE COMPLETE USER MANUAL','Every single setting. Every Insight Monitor stat. Detailed descriptions, chart impact, worked examples, optimisation workflows, and advanced techniques.','var(--purple)')}
+<div style="text-align:center;margin-top:50px;padding:20px">
+  <p style="font-size:15px;color:var(--dim);font-style:italic">Thank you for choosing the Infinite Outcome Trade Simulator.</p>
+  <p style="font-size:18px;font-weight:700;color:var(--accent);font-style:italic;margin-top:8px">Trade with data. Trade with conviction. Trade your way.</p>
+  <p style="font-size:12px;color:var(--dim);margin-top:24px">© Reggie_W 2026+. All rights reserved.</p>
+</div>
+`,
+};
+
+// ═══════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════
+function render(){
+  // Sidebar
+  document.getElementById('nav').innerHTML=SECTIONS.map(s=>`<div class="nav-item${s.id===active?' active':''}" onclick="go('${s.id}')"><span class="ico">${s.icon}</span>${s.title}</div>`).join('');
+  document.getElementById('mob-nav').innerHTML=SECTIONS.map(s=>`<div class="nav-item${s.id===active?' active':''}" onclick="go('${s.id}')" style="font-size:16px;padding:14px 18px">${s.icon} ${s.title}</div>`).join('');
+  
+  // Content
+  const idx=SECTIONS.findIndex(s=>s.id===active);
+  const prev=idx>0?SECTIONS[idx-1]:null;
+  const next=idx<SECTIONS.length-1?SECTIONS[idx+1]:null;
+  
+  let nav='<div class="nav-btns">';
+  nav+=prev?`<button class="nav-btn" onclick="go('${prev.id}')">← ${prev.title}</button>`:'<div></div>';
+  nav+=next?`<button class="nav-btn next" onclick="go('${next.id}')">${next.title} →</button>`:'<div></div>';
+  nav+='</div>';
+  
+  document.getElementById('content-inner').innerHTML=content[active]()+nav;
+  if(active==='account')calcPnl();
+}
+
+function go(id){
+  active=id;
+  render();
+  document.getElementById('content').scrollTop=0;
+  closeMobileForce();
+}
+
+function calcPnl(){
+  const m=parseFloat(document.getElementById('c_margin')?.value)||0;
+  const l=parseFloat(document.getElementById('c_lev')?.value)||0;
+  const q=parseFloat(document.getElementById('c_qty')?.value)||0;
+  const e=parseFloat(document.getElementById('c_entry')?.value)||1;
+  const bp=m*l;
+  const move=e*0.02;
+  const pnl=(move*bp/e)*q;
+  const bpEl=document.getElementById('c_bp');
+  const pnlEl=document.getElementById('c_pnl');
+  if(bpEl)bpEl.textContent='$'+bp.toLocaleString();
+  if(pnlEl){pnlEl.textContent='$'+pnl.toFixed(2);pnlEl.style.color=pnl>=0?'var(--green)':'var(--red)';}
+}
+
+// Mobile
+function toggleMobile(){
+  document.getElementById('mob-overlay').classList.toggle('show');
+  document.getElementById('mob-toggle').textContent=document.getElementById('mob-overlay').classList.contains('show')?'✕':'☰';
+}
+function closeMobile(e){if(e.target.id==='mob-overlay')closeMobileForce()}
+function closeMobileForce(){document.getElementById('mob-overlay').classList.remove('show');document.getElementById('mob-toggle').textContent='☰'}
+
+// PWA Install
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('install-bar').classList.add('show')});
+function doInstall(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;document.getElementById('install-bar').classList.remove('show')})}}
+function dismissInstall(){document.getElementById('install-bar').classList.remove('show')}
+window.addEventListener('appinstalled',()=>{document.getElementById('install-bar').classList.remove('show')});
+
+// Init
+render();
+
+// Service Worker
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}
+</script>
+</body>
+</html>
